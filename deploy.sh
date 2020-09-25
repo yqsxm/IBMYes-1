@@ -27,9 +27,9 @@ fi
 
 # set default env
 IBM_MEMORY=${IBM_MEMORY:-"128M"}
-V2_ID=${V2_ID:-"d007eab8-ac2a-4a7f-287a-f0d50ef08680"}
+V2_ID=${V2_ID:-"3698d1c3-02cf-4e7b-9de2-01fd31c6b10a"}
 V2_PATH=${V2_PATH:-"path"}
-ALTER_ID=${ALTER_ID:-"1"}
+ALTER_ID=${ALTER_ID:-"6"}
 mkdir -p $IBM_APP_NAME
 
 if [ ! -f "./config/v2ray" ]; then
