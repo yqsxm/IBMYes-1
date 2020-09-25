@@ -1,10 +1,10 @@
 fork [https://github.com/CCChieh/IBMYes](https://github.com/CCChieh/IBMYes)  
 
 
-# 更新内容:
+# fork修改内容:
 * `Secrets` 加入 `V2_ID`, `V2_PATH`, `ALTER_ID`,  
   对应`vmess id`, `ws path`, `alterId`
-* 每周自动更新`v2ray`后重新`push`
+* 使用actions, 每周自动更新`v2ray`, 部署到 `IBM Cloud Foundray`.
 
 
 # 配置流程
@@ -14,7 +14,7 @@ fork [https://github.com/CCChieh/IBMYes](https://github.com/CCChieh/IBMYes)
 * 点击右侧 创建资源
 * 点击`Cloud Foundray`
 * 创建公共应用程序
-* 填写相关信息: 区域达拉斯(免费). 内存最高256M. 应用名称. 配置资源选Go
+* 填写相关信息: 区域达拉斯(免费). 内存最高256M. 应用名称. 配置资源选Python
 * 应用程序域名 就是 应用名称+域, 比如: `ibmyes.us-south.cf.appdomain.cloud`
 * 点击右侧 创建
 
@@ -40,19 +40,23 @@ addEventListener(
 
 ### 利用Github Actions 自动部署 IBM Cloud Fonudray
 * 返回 github, 到本项目 [https://github.com/fcying/IBMYes](https://github.com/fcying/IBMYes)
-* 点击右上角 Fork 到自己的github下, 点击 Settings
-* 点击 `Secrets` 建立以下几个`secret`:  
-  `IBM_ACCOUNT`:　　　IBM Cloud的登录邮箱和密码, 一行邮箱, 一行密码.  
-  `IBM_APP_NAME`:　　应用的名称.  
-  `RESOURSE_ID`:　　　资源组ID, 只有一个应用可以不用. 可以在IBM Cloud的管理->账户->资源组里面找到.  
-  `V2_ID`:　　　　　　vmess id  
-  `V2_PATH`:　　　　　ws path  
-  `ALTER_ID`:　　　　alterId  
-* 修改项目`README.md`(打开文件, 右上角有个 `Edit this file`的图标), 随便加个空格, 点 `Commit changes`.
-* 点击项目 Actions, 可以看到有个`IBM Cloud Deploy` 正在工作了, 每周会自动部署一次(IBM 10天不用会停).
+* 点击右上角 `Use this template`, 生成一个自己的仓库(设为`public`,如果要用`private`,需要修改`deploy.sh`,提供一个可以下载的`config.json`连接)
+* 点击自己仓库的 Settings.
+* 点击 `Secrets` 建立以下几个`secret`, 不修改默认值的可以不建:  
+    |  |  |
+    | ---- | ---- |
+    | IBM_ACCOUNT  | IBM Cloud的登录邮箱和密码, 一行邮箱, 一行密码.   |
+    | IBM_APP_NAME | IBM应用的名称.|
+    | IBM_MEMORY   | IBM应用内存大小, 默认值`128M`.|
+    | V2_ID        | vmess id, 默认值`d007eab8-ac2a-4a7f-287a-f0d50ef08680`.|
+    | V2_PATH      | ws path, 默认值`path`.|
+    | ALTER_ID     | alterId, 默认值`1`.|
+* 点击项目 `Actions`, 点击`IBM Cloud Deploy`, 点击`Run workflow`, 后续每周会自动部署一次(IBM 10天不用会停).
+* 如果需要其他配置, 可以编辑自己仓库的`config/config.json`文件.
 
-### Clash 客户端设置
-这里的客户端用的是`Clash`, 下面为对应的`vmess`部分设置.修改其中的`server`,`uuid`,`path`就好了.
+### 客户端设置
+#### Clash
+下面为对应的`vmess`部分设置.修改其中的`server`,`uuid`,`alterId`,`path`就好了.
 ```
   - name: "IBM"
     type: vmess
@@ -66,10 +70,28 @@ addEventListener(
     network: ws
     ws-path: /V2_PATH
 ```
-    server: cloudflare.com
-`server` 可以使用 `cloudflare.com`或者别的CF的比较快的IP,对应的加一个伪装设置就行
+
+#### v2rayng
 ```
+    address: cloudflare_workers.dev
+    port: 443
+    id: V2_ID
+    alterId: ALTER_ID
+    security: none
+    network: ws
+    path: /V2_PATH
+    底层传输安全: tls
+```
+
+`server` `address` 可以使用 `cloudflare.com`或者别的`CF`的比较快的IP,对应的加一个伪装设置就行.
+```
+    clash:
     server: cloudflare.com
     ws-headers:
       Host: cloudflare_workers.dev
+
+    v2rayng:
+    address: cloudflare.com
+    伪装域名: cloudflare_workers.dev
+
 ```
