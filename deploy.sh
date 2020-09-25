@@ -70,7 +70,7 @@ chmod +x ./$IBM_APP_NAME/d.sh
 #exit 0
 
 #echo "${BLUE}ibmcloud login${END}"
-#$IBMCLOUD login -r us-south <<EOF
+#$IBMCLOUD login -r eu-gb <<EOF
 #$IBM_ACCOUNT
 #n
 #EOF
@@ -83,12 +83,12 @@ chmod +x ./$IBM_APP_NAME/d.sh
 if [ ! -f "$HOME/.bluemix/cfcli/cf" ]; then
     echo "${BLUE}ibmcloud cf install${END}"
     $IBMCLOUD cf install
-    #$IBMCLOUD target --cf-api 'https://api.us-south.cf.cloud.ibm.com'
+    #$IBMCLOUD target --cf-api 'https://api.eu-gb.cf.cloud.ibm.com'
 fi
 #$IBMCLOUD target --cf
 
 echo "${BLUE}cf login${END}"
-$CF login -a https://api.us-south.cf.cloud.ibm.com <<EOF
+$CF login -a https://api.eu-gb.cf.cloud.ibm.com <<EOF
 $IBM_ACCOUNT
 EOF
 
